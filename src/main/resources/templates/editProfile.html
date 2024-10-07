@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBook Profile Update</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .logo {
+            font-size: 1.5rem;
+            color: #fbbf24; /* Gold color */
+            font-weight: bold;
+        }
+        .form-control {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e5e7eb;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #fbbf24; /* Gold focus border */
+            outline: none;
+        }
+        .btn {
+            background-color: #3b82f6;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2563eb;
+        }
+        .update-profile-header {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 40px auto; /* Center and give space */
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav class="flex justify-between items-center p-4 bg-gray-800">
+        <div class="logo">
+            <a href="/goHome" class="text-white">ChatBook</a>
+        </div>
+        <div class="flex items-center">
+            <span class="text-white mr-2">
+                <i class="fas fa-user-circle"></i> <!-- Icon for username -->
+                <span th:text="${session.username}"></span>
+            </span>
+            <a href="/logout" class="text-white flex items-center">
+                <i class="fas fa-sign-out-alt mr-1"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="update-profile-header">
+        <h3 class="text-2xl font-bold text-center">Update Your Profile</h3>
+        <form action="/updateProfile" method="post" enctype="multipart/form-data" class="mt-4">
+            <label for="dob" class="block font-medium">DOB:</label>
+            <input type="date" name="dob" id="dob" class="form-control" required>
+
+            <label class="block font-medium mt-2">Gender:</label>
+            <div class="flex items-center space-x-4">
+                <label class="flex items-center">
+                    <input type="radio" name="gender" value="M" required class="mr-2"> M
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="gender" value="F" required class="mr-2"> F
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="gender" value="O" required class="mr-2"> O
+                </label>
+            </div>
+
+            <label for="city" class="block font-medium mt-2">City:</label>
+            <input type="text" name="city" id="city" class="form-control" required>
+
+            <label for="bio" class="block font-medium mt-2">Bio:</label>
+            <input type="text" name="bio" id="bio" class="form-control" required>
+
+            <label for="college" class="block font-medium mt-2">College:</label>
+            <input type="text" name="college" id="college" class="form-control" required>
+
+            <label for="linkedIn" class="block font-medium mt-2">LinkedIn:</label>
+            <input type="text" name="linkedIn" id="linkedIn" class="form-control" required>
+
+            <label for="gitHub" class="block font-medium mt-2">GitHub:</label>
+            <input type="text" name="gitHub" id="gitHub" class="form-control" required>
+
+            <label for="profilePic" class="block font-medium mt-2">Profile Picture:</label>
+            <input type="file" name="profilePic" id="profilePic" accept="image/*" class="form-control" required>
+
+            <button type="submit" class="btn mt-4 w-full">Update Profile</button>
+        </form>
+    </div>
+</body>
+</html>

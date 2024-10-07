@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodBook Profile</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f3f4f6; /* Light gray background */
+            font-family: 'Arial', sans-serif;
+        }
+        nav {
+            background-color: #1f2937; /* Dark background */
+            padding: 1rem;
+        }
+        nav a {
+            color: white; /* White color for links */
+            margin-right: 1.5rem; /* Space between links */
+            transition: color 0.2s;
+        }
+        nav a:hover {
+            color: #fbbf24; /* Gold color on hover */
+        }
+        .profile-header {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            text-align: left; /* Left align text by default */
+        }
+        .profile-picture {
+            text-align: center; /* Center align the profile picture and username */
+            margin-bottom: 20px;
+        }
+        .profile-picture img {
+            width: 80px; /* Smaller profile picture */
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #fbbf24; /* Gold border */
+            object-fit: cover;
+        }
+        .post-card {
+            margin-bottom: 20px; /* Space between cards */
+        }
+        .post-image {
+            width: 100%; /* Full width */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .social-links {
+            margin-top: 10px; /* Space above social links */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav class="d-flex justify-content-between">
+        <div class="d-flex align-items-center">
+            <a href="/goHome"><i class="fas fa-home"></i> Home</a>
+            <a href="/openCreatePost"><i class="fas fa-plus-circle"></i> Create Post</a>
+            <a href="/openEditProfile"><i class="fas fa-edit"></i> Edit Profile</a>
+        </div>
+        <div class="d-flex align-items-center">
+            <span class="username" style="color: white;">
+                <i class="fas fa-user-circle"></i> <!-- Added icon for username -->
+                <span th:text="${session.username}" style="color: white;"></span>
+            </span>
+            <a href="/logout" class="header-link" style="color: white;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <div class="profile-header">
+        <div class="profile-picture">
+            <img th:if="${user.photoBase64}" 
+                 th:src="'data:image/jpeg;base64,' + ${user.photoBase64}" 
+                 alt="Profile Photo" />
+            <img th:if="${user.photoBase64 == null}" 
+                 src="/images/default-profile.jpg" 
+                 alt="Default Profile Photo" />
+            <h1 class="text-xl font-bold mt-2" th:text="${user.username}"></h1>
+        </div>
+        <ul class="mt-4">
+            <li><i class="fas fa-calendar-alt"></i> Date of Birth: <span th:text="${user.dob}"></span></li>
+            <li><i class="fas fa-map-marker-alt"></i> City: <span th:text="${user.city}"></span></li>
+            <li><i class="fas fa-venus-mars"></i> Gender: <span th:text="${user.gender}"></span></li>
+            <li><i class="fas fa-graduation-cap"></i> College: <span th:text="${user.college}"></span></li>
+            <li><i class="fas fa-info-circle"></i> Bio: <span th:text="${user.bio}"></span></li>
+            <li class="social-links">
+                <i class="fab fa-linkedin"></i> <a th:href="${user.linkedIn}" target="_blank">LinkedIn</a> &nbsp; |
+                <i class="fab fa-github"></i> <a th:href="${user.gitHub}" target="_blank">GitHub</a>
+            </li>
+        </ul>
+    </div>
+
+    <h3 class="text-xl font-bold mx-4 mt-6">Posts</h3>
+    <div class="container mt-4">
+        <div class="row">
+            <span th:each="post : ${myPosts}" class="col-md-6">
+                <div class="card post-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <img th:if="${post.user.photoBase64}" 
+                                 th:src="'data:image/jpeg;base64,' + ${post.user.photoBase64}" 
+                                 alt="User Photo" class="rounded-circle" style="width: 40px; height: 40px;"/>
+                            <img th:if="${post.user.photoBase64 == null}" 
+                                 src="/images/default-profile.jpg" 
+                                 alt="Default Profile Photo" class="rounded-circle" style="width: 40px; height: 40px;"/>
+                            <h5 class="font-bold text-gray-700 ml-2" th:text="${post.user.username}">Unknown</h5>
+                        </div>
+
+                        <h5 class="font-bold" th:text="${post.caption}"></h5>
+                        <img th:if="${post.photoBase64}" 
+                             th:src="'data:image/jpeg;base64,' + ${post.photoBase64}" 
+                             alt="Post Photo" class="post-image"/> <!-- Image within the card -->
+
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <p><strong>Likes:</strong> <span th:text="${post.likes}"></span></p>
+                            <form action="/likePost" method="post" class="d-flex align-items-center">
+                                <input type="hidden" name="id" th:value="${post.id}">
+                                <button type="submit" class="btn btn-light">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <form action="/addComment" method="post" class="mt-3">
+                            <input type="hidden" name="id" th:value="${post.id}">
+                            <textarea name="comment" class="form-control" placeholder="Add a comment..." required></textarea>
+                            <button type="submit" class="btn btn-secondary mt-2">
+                                <i class="fas fa-comment"></i> Comment
+                            </button>
+                        </form>
+
+                        <div class="mt-3">
+                            <h6><strong>Comments:</strong></h6>
+                            <ul>
+                                <li th:each="comment : ${post.comments}">
+                                    <span th:text="${comment}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </span>
+        </div>
+    </div>
+    
+    <!-- Bootstrap & JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

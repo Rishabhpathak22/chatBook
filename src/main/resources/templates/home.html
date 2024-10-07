@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodBook Home</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" href="https://bit.ly/offchatbook" type="image/x-icon">
+    <style>
+        /* Custom Styles */
+        .custom-header {
+            background-color: #1f2937; /* Dark background */
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-link {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .header-link:hover {
+            color: #fbbf24; /* Gold hover color */
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fbbf24;
+            text-decoration: none;
+            margin-right: 15px; /* Space between logo and links */
+        }
+
+        .username {
+            margin-left: 15px;
+            color: black; /* Changed to black */
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .username-icon {
+            margin-right: 5px; /* Space between icon and username */
+            color: white; /* Icon color */
+        }
+
+        .post-card {
+            margin-bottom: 20px; /* Space between cards */
+        }
+
+        .post-image {
+            width: 100%; /* Full width */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+        /* Link styles for username */
+        .username a {
+            color: white; /* Set to black */
+            text-decoration: none; /* Remove underline */
+        }
+
+        .username a:hover {
+            color: #fbbf24; /* Optional hover color */
+        }
+
+        /* Link styles for post username */
+        .post-username a {
+            color: black; /* Set to black */
+            text-decoration: none; /* Remove underline */
+        }
+
+        .post-username a:hover {
+            color: #fbbf24; /* Optional hover color */
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Simple Header -->
+    <header class="custom-header">
+        <!-- Left Section: Logo and Navigation Links -->
+        <div class="header-left">
+            <a href="/goHome" class="logo">ChatBook</a>
+            <a href="/goHome" class="header-link"><i class="fas fa-home"></i> Home</a>
+            <a href="/openCreatePost" class="header-link"><i class="fas fa-plus-circle"></i> Create Post</a>
+            <a href="/openMyProfile" class="header-link"><i class="fas fa-user"></i> Profile</a>
+        </div>
+
+        <!-- Right Section: Username and Logout Link -->
+        <div class="d-flex align-items-center">
+            <span class="username">
+                <i class="fas fa-user-circle username-icon"></i>
+                <a th:href="@{/openMyProfile}" th:text="${session.username}" class="header-link">Username</a>
+            </span>
+            <a href="/logout" class="header-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </header>
+
+    <!-- Profile details section -->
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Thymeleaf loop to display posts -->
+            <div th:each="post : ${allPosts}" class="col-md-6">
+                <div class="card post-card">
+                    <div class="card-body">
+                        <!-- Display User Profile Picture -->
+                        <div class="d-flex align-items-center mb-2">
+                            <img th:if="${post.user != null && post.user.photoBase64 != null}" 
+                                 th:src="'data:image/jpeg;base64,' + ${post.user.photoBase64}" 
+                                 alt="User Photo" class="rounded-circle" style="width: 40px; height: 40px;"/>
+                            <img th:if="${post.user == null || post.user.photoBase64 == null}" 
+                                 src="/images/default-profile.jpg" 
+                                 alt="Default Profile Picture" class="rounded-circle" style="width: 40px; height: 40px;"/>
+                            
+                            <!-- Clickable Username Link -->
+                            <span class="post-username" th:if="${post.user}">
+                                <a th:href="@{/openMyProfile(username=${post.user.username})}" 
+                                   class="font-bold text-gray-700 ml-2" 
+                                   th:text="${post.user.username}"></a>
+                            </span>
+                            <span th:if="${post.user == null}" class="font-bold text-gray-700 ml-2">Anonymous</span>
+                        </div>
+
+                        <h5 class="font-bold" th:text="${post.caption}"></h5>
+                        <img th:if="${post.photoBase64}" 
+                             th:src="'data:image/jpeg;base64,' + ${post.photoBase64}" 
+                             alt="Post Photo" class="post-image"/> <!-- Image within the card -->
+
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <p><strong>Likes:</strong> <span th:text="${post.likes}"></span></p>
+                            <form action="/likePost" method="post" class="d-flex align-items-center">
+                                <input type="hidden" name="id" th:value="${post.id}">
+                                <button type="submit" class="btn btn-light">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Comment form -->
+                        <form action="/addComment" method="post" class="mt-3">
+                            <input type="hidden" name="id" th:value="${post.id}">
+                            <textarea name="comment" class="form-control" placeholder="Add a comment..." required></textarea>
+                            <button type="submit" class="btn btn-secondary mt-2">
+                                <i class="fas fa-comment"></i> Comment
+                            </button>
+                        </form>
+
+                        <!-- Displaying Comments -->
+                        <div class="mt-3">
+                            <h6><strong>Comments:</strong></h6>
+                            <ul>
+                                <li th:each="comment : ${post.comments}">
+                                    <span th:text="${comment}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </div>
+
+    <!-- Bootstrap & JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

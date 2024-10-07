@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #f3f4f6; /* Light background */
+        }
+
+        nav {
+            background-color: #1f2937; /* Dark background */
+            padding: 1rem;
+            display: flex; /* Flexbox for alignment */
+            justify-content: space-between; /* Space between items */
+            align-items: center; /* Center items vertically */
+        }
+
+        nav a {
+            color: white;
+            margin-right: 1.5rem;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #fbbf24; /* Gold color on hover */
+        }
+
+        .post-form-container {
+            max-width: 600px; /* Max width for the form */
+            margin: 2rem auto; /* Center the form */
+            padding: 2rem;
+            background-color: white; /* White background for form */
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none; /* Disable resize */
+        }
+
+        input[type="file"] {
+            margin-top: 1rem;
+        }
+
+        button {
+            background-color: #3b82f6; /* Blue background */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2563eb; /* Darker blue on hover */
+        }
+
+        .logout-button {
+            margin-left: 1rem; /* Space between username and logout button */
+            display: inline-flex; /* Align icon and text */
+            align-items: center;
+        }
+
+        .logout-button i {
+            margin-right: 5px; /* Space between icon and text */
+        }
+
+        .username-icon {
+            font-size: 1.5rem; /* Icon size */
+            color: white; /* Icon color */
+            margin-right: 5px; /* Space between icon and username */
+            border: 2px solid white; /* Border for round shape */
+            border-radius: 50%; /* Round shape */
+            padding: 5px; /* Space inside the circle */
+            display: flex; /* Flexbox for alignment */
+            align-items: center; /* Center icon vertically */
+            justify-content: center; /* Center icon horizontally */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav>
+        <div>
+            <a href="/goHome" class="text-white font-bold text-lg">ChatBook</a>
+            <a href="/goHome"><i class="fas fa-home"></i> News feed</a>
+            <a href="/openCreatePost"><i class="fas fa-plus-circle"></i> Create post</a>
+            <a href="/openMyProfile"><i class="fas fa-user-circle"></i> My profile</a>
+        </div>
+        <div class="text-white d-flex align-items-center">
+            <div class="username-icon">
+                <i class="fas fa-user-circle"></i> <!-- Profile icon -->
+            </div>
+            <span th:text="${session.username}"></span>
+            <a href="/logout" class="logout-button">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="post-form-container">
+        <h2 class="text-center mb-4">Create a New Post</h2>
+        <form id="profileForm" action="/createPost" method="post" enctype="multipart/form-data">
+            <textarea name="caption" placeholder="Write your caption here..." required></textarea>
+            <input type="file" name="photo" accept="image/*" class="form-control mt-2" />
+            <button type="submit" class="w-full">POST</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap & JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
